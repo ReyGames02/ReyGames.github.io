@@ -1,0 +1,114 @@
+<html> 
+  <head> 
+    <title> Voltron VS Galra </title> 
+    <script src="https://simplycodingcourses.com/files/simplyjs/simply.js"></script> 
+    <script> 
+      function start(){ 
+    	  sjs.open("target", 800, 500);
+        
+        //background
+        var background = new sjs.Image("Images/back.png");
+        background.setSize(800, 500);
+
+        //player
+        var player = new sjs.Image("Images/ship.png");
+        player.type = "player";
+        player.setWidth(150);
+        player.centerV();
+
+        //movement
+        sjs.keyDown(DOWN_KEY, function(){
+          player.pushDown();
+          });
+        sjs.keyDown (UP_KEY, function(){
+          player.pushUp();
+        });
+
+        //laser
+        var canShoot = true;
+       sjs.keyDown(SPACE_KEY, function(){
+        if(canShoot == true){
+          canShoot = false;
+        var laser = new sjs.Image("Images/fire.png");
+        laser.type = "laser";
+        laser.setWidth(100);
+        laser.moveTo(player.x + player.getWidth(), player.y + player.getHeight()/2);
+        laser.pushRight(40);
+        laser.friction = 0;
+        laser.noBounds = true;
+        setTimeout(function(){
+          canShoot = true;
+        },650);
+      }
+      });
+
+       //enemies
+       setInterval(function(){
+       var speed = Math.round(Math.random()* 20 + 3);
+       var yloc = Math.round(Math.random()* 450);
+       var enemy = new sjs.Image("Images/galra.png");
+       enemy.type = "enemy";
+       enemy.moveTo(800, yloc);
+       enemy.noBounds = true;
+       enemy.friction = 0;
+       enemy.pushLeft(speed);
+       enemy.setWidth(100);
+       }, 850);
+
+       //collision
+       sjs.onHit("laser", "enemy", function(x,y){
+       y.destroy();
+       x.destroy();
+       score = score + 1;
+       scoreText.setText("Score; "+score);
+       if(score > 9){
+        confirm("You Win! Congradulation! Play Again?")
+        window.location = "game.html";
+
+       }
+       });
+
+       sjs.onHit("player", "enemy", function (x,y){
+       x.destroy();
+       confirm("You Lose. Bummer! Play Again?");
+       window.location = "game.html";
+       });
+
+       sjs.onHit("enemy", "left_screen", function(x,y){
+        x.destroy();
+        player.grow(10);
+       })
+
+       //score
+       var score = 0;
+       var scoreText = new sjs.Text("Score: "+ score, 28, "White");
+       scoreText.centerH();
+
+       
+
+
+
+
+
+
+      } //end start 
+    </script> 
+  </head> 
+  <body onload="start()"> 
+    <h1> Voltron VS Galra </h1> 
+    <div id="target" style="margin:auto;background:maroon;"></div>
+    <table border="1">
+<tr>
+<th> Space </th> 
+<th> Shoot </th> 
+</tr> 
+<tr>
+  <th> Up Arrow </th>
+  <th> Move up </th>
+</tr>
+<tr>
+  <th> Down Arrow </th>
+  <th> Move Down </th>
+</tr>
+  </body> 
+</html>
